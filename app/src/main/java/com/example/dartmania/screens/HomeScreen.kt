@@ -21,6 +21,11 @@ import androidx.navigation.NavController
 fun HomeScreen(navController: NavController) {
     var pointsRemain by remember { mutableStateOf(501) }
     var multiplier by remember { mutableStateOf(1) }
+    var totalPoints by remember { mutableStateOf(0) }
+    var throwsCount by remember { mutableStateOf(0) }
+
+    val average = if (throwsCount > 0) totalPoints.toDouble() / throwsCount else 0.0
+
 
     Scaffold (
         topBar = {
@@ -30,19 +35,23 @@ fun HomeScreen(navController: NavController) {
             //SimpleBottomAppBar(navController)
         }
     ){ innerPadding ->
-        Box (
+        Column (
             modifier = Modifier
-                .padding(innerPadding),
+                .padding(innerPadding)
         ){
-            PlayerStats(pointsRemain = pointsRemain)
-            Spacer(modifier = Modifier.height(16.dp))
+            PlayerStats(pointsRemain = pointsRemain, average = average)
+            Spacer(modifier = Modifier.height(8.dp))
+            PlayerStats(pointsRemain = pointsRemain, average = average)
             PointButtons { value ->
                 when (value) {
                     "DOU" -> multiplier = 2
                     "TRI" -> multiplier = 3
                     else -> {
                         val intValue = value.toIntOrNull() ?: 0
-                        pointsRemain -= intValue * multiplier
+                        val pointsScored = intValue * multiplier
+                        pointsRemain -= pointsScored
+                        totalPoints += pointsScored
+                        throwsCount++
                         multiplier = 1 // Reset the multiplier after use
                         if (pointsRemain < 0) {
                             pointsRemain = 0 // Ensure points don't go negative
@@ -53,4 +62,3 @@ fun HomeScreen(navController: NavController) {
         }
     }
 }
-

@@ -144,7 +144,12 @@ fun PointButtons(onButtonClick: (String) -> Unit) {
 }
 
 @Composable
-fun CardsForPointButtons(title: String?, cardColor: Color = MaterialTheme.colorScheme.secondaryContainer, onClick: (String) -> Unit){
+fun CardsForPointButtons(
+    title: String?,
+    cardColor: Color = MaterialTheme.colorScheme.secondaryContainer,
+    isActive: Boolean = false,
+    onClick: (String) -> Unit
+){
     Card (
         modifier = Modifier
             .size(width = 98.dp, height = 40.dp)
@@ -160,7 +165,7 @@ fun CardsForPointButtons(title: String?, cardColor: Color = MaterialTheme.colorS
                 }
             },
         colors = CardDefaults.cardColors(
-            containerColor = cardColor
+            containerColor = if (isActive) Color.Gray else cardColor
         )
     ){
         title?.let {
@@ -177,8 +182,9 @@ fun CardsForPointButtons(title: String?, cardColor: Color = MaterialTheme.colorS
 
 @Preview
 @Composable
-fun PlayerStats(pointsRemain: Int = 501, average: Int = 0){
-    Column {
+fun PlayerStats(pointsRemain: Int = 501, average: Double = 0.0){
+    Column (
+    ){
         Row {
             Card(
                 modifier = Modifier
@@ -204,7 +210,7 @@ fun PlayerStats(pointsRemain: Int = 501, average: Int = 0){
                             .wrapContentSize(Alignment.Center)
                     )
                     Text(
-                        text = average.toString(),
+                        text = String.format("%.2f", average),
                         fontSize = 25.sp,
                         modifier = Modifier
                             .padding(end = 5.dp)

@@ -39,9 +39,9 @@ fun HomeScreen(navController: NavController) {
             modifier = Modifier
                 .padding(innerPadding)
         ){
-            PlayerStats(pointsRemain = pointsRemain, average = average)
+            PlayerStats(pointsRemain = pointsRemain, average = average, shots = throwsCount)
             Spacer(modifier = Modifier.height(8.dp))
-            PlayerStats(pointsRemain = pointsRemain, average = average)
+            PlayerStats(pointsRemain = pointsRemain, average = average, shots = throwsCount)
             PointButtons { value ->
                 when (value) {
                     "DOU" -> multiplier = 2

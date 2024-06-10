@@ -8,4 +8,6 @@ data class Player(
     var multiplier: Int = 1,
     var isDouActive: Boolean = false, // Track if DOU button is active
     var isTriActive: Boolean = false // Track if TRI button is active
+
+    //view model, player 1 player 2 mutable state
 )

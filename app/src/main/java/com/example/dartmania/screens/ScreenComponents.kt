@@ -155,12 +155,6 @@ fun CardsForPointButtons(
             .size(width = 98.dp, height = 40.dp)
             .clickable {
                 title?.let {
-                    // Convert the title to an integer if possible, else handle special cases
-                    val value = when (it) {
-                        "DOU" -> 2  // times 2
-                        "TRI" -> 3  // times 3
-                        else -> it.toIntOrNull() ?: 0  // convert to int or default to 0
-                    }
                     onClick(it)
                 }
             },
@@ -182,7 +176,11 @@ fun CardsForPointButtons(
 
 @Preview
 @Composable
-fun PlayerStats(pointsRemain: Int = 501, average: Double = 0.0){
+fun PlayerStats(
+    pointsRemain: Int = 501,
+    average: Double = 0.0,
+    shots: Int = 0
+){
     Column (
     ){
         Row {
@@ -209,12 +207,19 @@ fun PlayerStats(pointsRemain: Int = 501, average: Double = 0.0){
                         modifier = Modifier
                             .wrapContentSize(Alignment.Center)
                     )
-                    Text(
-                        text = String.format("%.2f", average),
-                        fontSize = 25.sp,
-                        modifier = Modifier
-                            .padding(end = 5.dp)
+                    Column {
+                        Text(
+                            text = String.format("%.2f", average),
+                            fontSize = 25.sp,
+                            modifier = Modifier
+                                .padding(end = 5.dp)
                         )
+                        Text(
+                            text = shots.toString(),
+                            fontSize = 25.sp
+                        )
+                    }
+
                 }
             }
         }

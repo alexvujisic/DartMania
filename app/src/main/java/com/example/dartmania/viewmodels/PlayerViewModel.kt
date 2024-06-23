@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class PlayerViewModel : ViewModel() {
-    // Expose screen UI state
     private val _playerOne = MutableStateFlow(Player(name = "Player 1"))
     val playerOne: StateFlow<Player> = _playerOne.asStateFlow()
 
@@ -27,7 +26,6 @@ class PlayerViewModel : ViewModel() {
     private val _winner = MutableStateFlow("")
     val winner: StateFlow<String> = _winner.asStateFlow()
 
-
     private var currentMultiplier = 1
 
     fun setMultiplier(multiplier: Int) {
@@ -36,67 +34,80 @@ class PlayerViewModel : ViewModel() {
 
     fun removePointsFromRemaining(points: Int) {
         val finalPoints = points * currentMultiplier
-        currentMultiplier = 1 // Reset multiplier after use
+        val currentState = if (_currentPlayer.value == 1) _playerOne.value else _playerTwo.value
 
-        if (_currentPlayer.value == 1) {
-            _playerOne.update { currentState ->
-                if (canRemovePoints(currentState.pointsRemain, finalPoints)) {
-                    val newPointsRemain = currentState.pointsRemain - finalPoints
-                    if (isGameOver(newPointsRemain)) {
-                        _gameOver.value = true
-                        _winner.value = currentState.name
-                        currentState.copy(pointsRemain = 0, throwsCount = currentState.throwsCount + 1)
-                    } else {
-                        currentState.copy(
-                            pointsRemain = newPointsRemain,
-                            totalPoints = currentState.totalPoints + finalPoints,
-                            throwsCount = currentState.throwsCount + 1
-                        )
-                    }
-                } else {
-                    currentState.copy(throwsCount = currentState.throwsCount + 1) // Increment throwsCount even if points exceed remaining points
-                }
+        if (canRemovePoints(currentState.pointsRemain, finalPoints)) {
+            val newPointsRemain = currentState.pointsRemain - finalPoints
+            if (isGameOver(newPointsRemain)) {
+                _gameOver.value = true
+                _winner.value = currentState.name
+                updatePlayerPoints(currentState, 0, finalPoints)
+            } else {
+                updatePlayerPoints(currentState, newPointsRemain, finalPoints)
             }
         } else {
-            _playerTwo.update { currentState ->
-                if (canRemovePoints(currentState.pointsRemain, finalPoints)) {
-                    val newPointsRemain = currentState.pointsRemain - finalPoints
-                    if (isGameOver(newPointsRemain)) {
-                        _gameOver.value = true
-                        _winner.value = currentState.name
-                        currentState.copy(pointsRemain = 0, throwsCount = currentState.throwsCount + 1)
-                    } else {
-                        currentState.copy(
-                            pointsRemain = newPointsRemain,
-                            totalPoints = currentState.totalPoints + finalPoints,
-                            throwsCount = currentState.throwsCount + 1
-                        )
-                    }
-                } else {
-                    currentState.copy(throwsCount = currentState.throwsCount + 1) // Increment throwsCount even if points exceed remaining points
-                }
-            }
+            incrementThrowsCount()
         }
-        _rounds.value++
+
         if (_rounds.value % 3 == 0) {
-            _currentPlayer.value = if (_currentPlayer.value == 1) 2 else 1
+            switchPlayer()
         }
     }
 
+    private fun updatePlayerPoints(currentState: Player, newPointsRemain: Int, finalPoints: Int) {
+        if (_currentPlayer.value == 1) {
+            _playerOne.update {
+                it.copy(
+                    pointsRemain = newPointsRemain,
+                    totalPoints = it.totalPoints + finalPoints,
+                    throwsCount = it.throwsCount + 1
+                )
+            }
+        } else {
+            _playerTwo.update {
+                it.copy(
+                    pointsRemain = newPointsRemain,
+                    totalPoints = it.totalPoints + finalPoints,
+                    throwsCount = it.throwsCount + 1
+                )
+            }
+        }
+        _rounds.value++
+        currentMultiplier = 1
+    }
+
+    private fun incrementThrowsCount() {
+        if (_currentPlayer.value == 1) {
+            _playerOne.update { it.copy(throwsCount = it.throwsCount + 1) }
+        } else {
+            _playerTwo.update { it.copy(throwsCount = it.throwsCount + 1) }
+        }
+        _rounds.value++
+        currentMultiplier = 1 // Reset multiplier after overthrow
+    }
+
+    private fun switchPlayer() {
+        _currentPlayer.value = if (_currentPlayer.value == 1) 2 else 1
+    }
+
+    private fun canRemovePoints(pointsRemain: Int, finalPoints: Int): Boolean {
+        return if (pointsRemain == finalPoints) {
+            currentMultiplier == 2
+        } else {
+            finalPoints <= pointsRemain
+        }
+    }
 
     private fun isGameOver(pointsRemain: Int): Boolean {
         return pointsRemain == 0 && currentMultiplier == 2
     }
-
 
     fun resetGame() {
         _playerOne.value = Player(name = "Player 1")
         _playerTwo.value = Player(name = "Player 2")
         _currentPlayer.value = 1
         _rounds.value = 0
-    }
-
-    private fun canRemovePoints(pointsRemain: Int, finalPoints: Int): Boolean {
-        return finalPoints <= pointsRemain
+        _gameOver.value = false
+        _winner.value = ""
     }
 }

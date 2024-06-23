@@ -17,6 +17,8 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -146,29 +148,30 @@ fun PointButtons(onButtonClick: (String) -> Unit) {
 @Composable
 fun CardsForPointButtons(
     title: String?,
-    cardColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     isActive: Boolean = false,
+    cardColor: Color = MaterialTheme.colorScheme.secondary,
     onClick: (String) -> Unit
-){
-    Card (
-        modifier = Modifier
-            .size(width = 98.dp, height = 40.dp)
-            .clickable {
-                title?.let {
-                    onClick(it)
-                }
-            },
-        colors = CardDefaults.cardColors(
+) {
+    Button(
+        onClick = {
+            title?.let {
+                onClick(it)
+            }
+        },
+        colors = ButtonDefaults.buttonColors(
             containerColor = if (isActive) Color.Gray else cardColor
-        )
-    ){
+        ),
+        modifier = Modifier
+            .size(width = 98.dp, height =40.dp)
+    ) {
         title?.let {
             Text(
                 text = it,
-                fontSize = 26.sp,
+                fontSize = 22.sp,
                 modifier = Modifier
                     .fillMaxSize()
-                    .wrapContentSize(Alignment.Center)
+                    .wrapContentSize(Alignment.Center),
+                textAlign = TextAlign.Center
             )
         }
     }
@@ -179,7 +182,8 @@ fun CardsForPointButtons(
 fun PlayerStats(
     pointsRemain: Int = 501,
     average: Double = 0.0,
-    shots: Int = 0
+    shots: Int = 0,
+    name: String = "Player"
 ){
     Column (
     ){
@@ -196,7 +200,7 @@ fun PlayerStats(
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Text(
-                        text = "Player 1",
+                        text = name,
                         fontSize = 25.sp,
                         modifier = Modifier.padding(start = 5.dp)
                     )

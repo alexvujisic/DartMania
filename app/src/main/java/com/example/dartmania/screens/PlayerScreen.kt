@@ -6,18 +6,23 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.dartmania.viewmodels.PlayerViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun PlayerScreen(
@@ -29,13 +34,20 @@ fun PlayerScreen(
     val gameOver by viewModel.gameOver.collectAsStateWithLifecycle()
     val winner by viewModel.winner.collectAsStateWithLifecycle()
 
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
     Scaffold(
         topBar = {
             SimpleTopAppBar(title = "Darts Mania", false, navController)
         },
         bottomBar = {
             // SimpleBottomAppBar(navController)
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
         }
+
     ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding)
@@ -59,7 +71,16 @@ fun PlayerScreen(
                     "TRI" -> viewModel.setMultiplier(3)
                     else -> {
                         val points = value.toIntOrNull() ?: 0
-                        viewModel.removePointsFromRemaining(points)
+                        //TRI 25 does not exist, check if player input is TRI 25
+                        if (points == 25 && viewModel.getMultiplier() == 3) {
+                            // Invalid combination, reset the multiplier and show a message
+                            viewModel.setMultiplier(1)
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("TRI 25 is not allowed")
+                            }
+                        } else {
+                            viewModel.removePointsFromRemaining(points)
+                        }
                     }
                 }
             }
@@ -81,3 +102,6 @@ fun PlayerScreen(
         )
     }
 }
+
+
+//animation während bot spielt

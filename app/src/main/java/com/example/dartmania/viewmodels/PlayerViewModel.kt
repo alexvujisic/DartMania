@@ -32,6 +32,10 @@ class PlayerViewModel : ViewModel() {
         currentMultiplier = multiplier
     }
 
+    fun getMultiplier(): Int{
+        return currentMultiplier
+    }
+
     fun removePointsFromRemaining(points: Int) {
         val finalPoints = points * currentMultiplier
         val currentState = if (_currentPlayer.value == 1) _playerOne.value else _playerTwo.value
@@ -41,9 +45,9 @@ class PlayerViewModel : ViewModel() {
             if (isGameOver(newPointsRemain)) {
                 _gameOver.value = true
                 _winner.value = currentState.name
-                updatePlayerPoints(currentState, 0, finalPoints)
+                updatePlayerPoints(0, finalPoints)
             } else {
-                updatePlayerPoints(currentState, newPointsRemain, finalPoints)
+                updatePlayerPoints(newPointsRemain, finalPoints)
             }
         } else {
             incrementThrowsCount()
@@ -54,7 +58,7 @@ class PlayerViewModel : ViewModel() {
         }
     }
 
-    private fun updatePlayerPoints(currentState: Player, newPointsRemain: Int, finalPoints: Int) {
+    private fun updatePlayerPoints(newPointsRemain: Int, finalPoints: Int) {
         if (_currentPlayer.value == 1) {
             _playerOne.update {
                 it.copy(
@@ -110,4 +114,5 @@ class PlayerViewModel : ViewModel() {
         _gameOver.value = false
         _winner.value = ""
     }
+
 }

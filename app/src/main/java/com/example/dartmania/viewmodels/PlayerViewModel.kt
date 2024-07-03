@@ -116,4 +116,8 @@ class PlayerViewModel : ViewModel() {
     }
 
 
+    fun toggleCpuPlayer() {
+        _playerTwo.value.isCpuPlayer = !_playerTwo.value.isCpuPlayer
+    }
+
 }

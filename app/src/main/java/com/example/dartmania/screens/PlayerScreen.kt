@@ -35,6 +35,7 @@ fun PlayerScreen(
     val gameOver by viewModel.gameOver.collectAsStateWithLifecycle()
     val winner by viewModel.winner.collectAsStateWithLifecycle()
     val cpuDarts by viewModel.cpuDarts.collectAsStateWithLifecycle()
+    val currentPlayer by viewModel.currentPlayer.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -68,31 +69,32 @@ fun PlayerScreen(
                 name = if (playerTwo.isCpuPlayer) "CPU" else "Player 2"
             )
             Button(onClick = {
-                viewModel.resetGame()
                 viewModel.toggleCpuPlayer()
             }) {
                 Text(text = "Play against CPU")
             }
-            if (playerTwo.isCpuPlayer){
+            if(currentPlayer == 2 && playerTwo.isCpuPlayer){
                 Row {
                     Text (text = "" + cpuDarts)
                 }
-            }
-            PointButtons { value ->
-                when (value) {
-                    "DOU" -> viewModel.setMultiplier(2)
-                    "TRI" -> viewModel.setMultiplier(3)
-                    else -> {
-                        val points = value.toIntOrNull() ?: 0
-                        //TRI 25 does not exist, check if player input is TRI 25
-                        if (points == 25 && viewModel.getMultiplier() == 3) {
-                            // Invalid combination, reset the multiplier and show a message
-                            viewModel.setMultiplier(1)
-                            coroutineScope.launch {
-                                snackbarHostState.showSnackbar("TRI 25 is not allowed")
+                viewModel.cpuThrowDarts()
+            }else {
+                PointButtons { value ->
+                    when (value) {
+                        "DOU" -> viewModel.setMultiplier(2)
+                        "TRI" -> viewModel.setMultiplier(3)
+                        else -> {
+                            val points = value.toIntOrNull() ?: 0
+                            //TRI 25 does not exist, check if player input is TRI 25
+                            if (points == 25 && viewModel.getMultiplier() == 3) {
+                                // Invalid combination, reset the multiplier and show a message
+                                viewModel.setMultiplier(1)
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar("TRI 25 is not allowed")
+                                }
+                            } else {
+                                viewModel.removePointsFromRemaining(points)
                             }
-                        } else {
-                            viewModel.removePointsFromRemaining(points)
                         }
                     }
                 }

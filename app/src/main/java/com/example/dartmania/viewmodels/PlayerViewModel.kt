@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import com.example.dartmania.models.Player
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -121,14 +120,18 @@ class PlayerViewModel : ViewModel() {
 
 
     fun toggleCpuPlayer() {
-        cpuDarts.value = ""
         _playerTwo.value.isCpuPlayer = !_playerTwo.value.isCpuPlayer
+    }
+
+    fun cpuThrowDarts() {
+        cpuDarts.value = ""
         if (_playerTwo.value.isCpuPlayer){
-            cpuPlayer = CPUPlayer { value ->
+            cpuPlayer = CPUPlayer { value, multiplier ->
+                setMultiplier(multiplier)
+                removePointsFromRemaining(value)
                 cpuDarts.value += "$value "
             }
             cpuPlayer.startGeneratingValues()
         }
     }
-
 }

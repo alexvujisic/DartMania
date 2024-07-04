@@ -3,7 +3,7 @@ package com.example.dartmania.viewmodels
 import kotlinx.coroutines.*
 import kotlin.random.Random
 
-class CPUPlayer(private val callback: (Int) -> Unit) {
+class CPUPlayer(private val callback: (Int, Int) -> Unit) {
 
     private var job: Job? = null
 
@@ -20,8 +20,9 @@ class CPUPlayer(private val callback: (Int) -> Unit) {
     private suspend fun generateAndPrintValues() {
         repeat(3) {
             delay(2000) // Delay for 2 seconds
-            val value = Random.nextInt(1, 101) // Generate a random integer between 1 and 100
-            callback(value) // Pass the value to the callback function
+            val value = Random.nextInt(1, 21) // Generate a random integer between 1 and 20
+            val multiplier = Random.nextInt(1, 4)
+            callback(value, multiplier) // Pass the value to the callback function
         }
     }
 

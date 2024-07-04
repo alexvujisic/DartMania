@@ -2,7 +2,6 @@ package com.example.dartmania.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -71,14 +70,13 @@ fun PlayerScreen(
             Button(onClick = {
                 viewModel.toggleCpuPlayer()
             }) {
-                Text(text = "Play against CPU")
+                Text(text = if(!playerTwo.isCpuPlayer) "Play against CPU" else "Player 2")
             }
-            if(currentPlayer == 2 && playerTwo.isCpuPlayer){
-                Row {
-                    Text (text = "" + cpuDarts)
-                }
-                viewModel.cpuThrowDarts()
-            }else {
+            DartsPointsRow(
+                visible = playerTwo.isCpuPlayer,
+                darts = cpuDarts
+            )
+            if(currentPlayer == 1 || (!playerTwo.isCpuPlayer && currentPlayer == 2)){
                 PointButtons { value ->
                     when (value) {
                         "DOU" -> viewModel.setMultiplier(2)

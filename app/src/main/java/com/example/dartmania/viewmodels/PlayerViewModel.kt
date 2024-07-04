@@ -29,7 +29,7 @@ class PlayerViewModel : ViewModel() {
     private var currentMultiplier = 1
 
     private lateinit var cpuPlayer: CPUPlayer
-    var cpuDarts: MutableStateFlow<String> = MutableStateFlow("")
+    var cpuDarts: MutableStateFlow<ArrayList<String>> = MutableStateFlow(ArrayList())
 
     fun setMultiplier(multiplier: Int) {
         currentMultiplier = multiplier
@@ -95,6 +95,9 @@ class PlayerViewModel : ViewModel() {
 
     private fun switchPlayer() {
         _currentPlayer.value = if (_currentPlayer.value == 1) 2 else 1
+        if (_currentPlayer.value == 2 && _playerTwo.value.isCpuPlayer){
+            cpuThrowDarts()
+        }
     }
 
     private fun canRemovePoints(pointsRemain: Int, finalPoints: Int): Boolean {
@@ -120,18 +123,39 @@ class PlayerViewModel : ViewModel() {
 
 
     fun toggleCpuPlayer() {
-        _playerTwo.value.isCpuPlayer = !_playerTwo.value.isCpuPlayer
+        _rounds.value = 0
+        _currentPlayer.value = 1
+        _playerOne.value = Player(name = "Player 1")
+        _playerTwo.update {
+            it.copy(
+                cpu = !it.cpu,
+                pointsRemain = 501,
+                totalPoints = 0,
+                throwsCount = 0,
+                multiplier = 1,
+                isDouActive = false,
+                isTriActive = false,
+                checkOutRate = 0.0
+            )
+        }
     }
 
     fun cpuThrowDarts() {
-        cpuDarts.value = ""
+        cpuDarts.value = ArrayList()
         if (_playerTwo.value.isCpuPlayer){
             cpuPlayer = CPUPlayer { value, multiplier ->
                 setMultiplier(multiplier)
                 removePointsFromRemaining(value)
-                cpuDarts.value += "$value "
+                when (multiplier) {
+                    1 -> cpuDarts.value.add(value.toString())
+                    2 -> cpuDarts.value.add("DOU " + value.toString())
+                    3 -> cpuDarts.value.add("TRI " + value.toString())
+                    else -> println("ERROR")
+                }
             }
             cpuPlayer.startGeneratingValues()
+        }else{
+            cpuPlayer.stopGeneratingValues()
         }
     }
 }

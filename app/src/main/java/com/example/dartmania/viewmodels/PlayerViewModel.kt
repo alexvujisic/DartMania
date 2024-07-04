@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.dartmania.models.Player
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -27,6 +28,9 @@ class PlayerViewModel : ViewModel() {
     val winner: StateFlow<String> = _winner.asStateFlow()
 
     private var currentMultiplier = 1
+
+    private lateinit var cpuPlayer: CPUPlayer
+    var cpuDarts: MutableStateFlow<String> = MutableStateFlow("")
 
     fun setMultiplier(multiplier: Int) {
         currentMultiplier = multiplier
@@ -117,7 +121,14 @@ class PlayerViewModel : ViewModel() {
 
 
     fun toggleCpuPlayer() {
+        cpuDarts.value = ""
         _playerTwo.value.isCpuPlayer = !_playerTwo.value.isCpuPlayer
+        if (_playerTwo.value.isCpuPlayer){
+            cpuPlayer = CPUPlayer { value ->
+                cpuDarts.value += "$value "
+            }
+            cpuPlayer.startGeneratingValues()
+        }
     }
 
 }

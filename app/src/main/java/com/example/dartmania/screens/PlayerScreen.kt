@@ -1,6 +1,8 @@
 package com.example.dartmania.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,6 +24,7 @@ import androidx.navigation.NavController
 import com.example.dartmania.viewmodels.PlayerViewModel
 import kotlinx.coroutines.launch
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun PlayerScreen(
     viewModel: PlayerViewModel = viewModel(),
@@ -31,6 +34,7 @@ fun PlayerScreen(
     val playerTwo by viewModel.playerTwo.collectAsStateWithLifecycle()
     val gameOver by viewModel.gameOver.collectAsStateWithLifecycle()
     val winner by viewModel.winner.collectAsStateWithLifecycle()
+    val cpuDarts by viewModel.cpuDarts.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -63,8 +67,16 @@ fun PlayerScreen(
                 shots = playerTwo.throwsCount,
                 name = if (playerTwo.isCpuPlayer) "CPU" else "Player 2"
             )
-            Button(onClick = { viewModel.toggleCpuPlayer() }) {
+            Button(onClick = {
+                viewModel.resetGame()
+                viewModel.toggleCpuPlayer()
+            }) {
                 Text(text = "Play against CPU")
+            }
+            if (playerTwo.isCpuPlayer){
+                Row {
+                    Text (text = "" + cpuDarts)
+                }
             }
             PointButtons { value ->
                 when (value) {

@@ -123,22 +123,25 @@ class PlayerViewModel : ViewModel() {
     }
 
 
-    fun toggleCpuPlayer() {
-        _rounds.value = 0
-        _currentPlayer.value = 1
-        _playerOne.value = Player(name = "Player 1")
-        _playerTwo.update {
-            it.copy(
-                cpu = !it.cpu,
-                pointsRemain = 501,
-                totalPoints = 0,
-                throwsCount = 0,
-                multiplier = 1,
-                isDouActive = false,
-                isTriActive = false,
-                checkOutRate = 0.0
-            )
+    fun toggleCpuPlayer(cpu: Boolean = false) {
+        if(cpu){
+            _rounds.value = 0
+            _currentPlayer.value = 1
+            _playerOne.value = Player(name = "Player 1")
+            _playerTwo.update {
+                it.copy(
+                    cpu = !it.cpu,
+                    pointsRemain = 501,
+                    totalPoints = 0,
+                    throwsCount = 0,
+                    multiplier = 1,
+                    isDouActive = false,
+                    isTriActive = false,
+                    checkOutRate = 0.0
+                )
+            }
         }
+
     }
 
     fun cpuThrowDarts() {

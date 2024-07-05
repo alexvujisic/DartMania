@@ -1,5 +1,6 @@
 package com.example.dartmania.navigation
 
+import android.transition.Scene
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
@@ -15,6 +16,9 @@ import com.example.dartmania.viewmodels.PlayerViewModel
 sealed class Screen(val route: String) {
 
     object Home : Screen("homescreen")
+    object PlayerGame: Screen("againstplayerscreen")
+
+    object BotGame: Screen("againstbotscreen")
 
 }
 
@@ -22,15 +26,19 @@ sealed class Screen(val route: String) {
 fun Navigation(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(Screen.Home.route) {
-            PlayerScreen(viewModel = PlayerViewModel(), navController)
+            HomeScreen(navController)
         }
-        composable(Screen.Home.route) {
+        composable(Screen.PlayerGame.route) {
+            PlayerScreen(viewModel = PlayerViewModel(), navController, playingAgainstBot = false)
+        }
+
+        composable(Screen.BotGame.route) {
+            PlayerScreen(viewModel = PlayerViewModel(), navController, playingAgainstBot = true)
+        }
+
+        /*composable(Screen.Home.route){
             PlayerScreen(viewModel = PlayerViewModel(), navController)
 
-        }
-        composable(Screen.Home.route){
-            PlayerScreen(viewModel = PlayerViewModel(), navController)
-
-        }
+        }*/
     }
 }

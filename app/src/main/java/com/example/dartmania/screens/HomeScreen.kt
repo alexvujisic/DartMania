@@ -1,11 +1,15 @@
 package com.example.dartmania.screens
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -13,52 +17,45 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.DartMania.R
+import com.example.dartmania.navigation.Screen
+import com.example.dartmania.viewmodels.PlayerViewModel
 
 @Composable
-fun HomeScreen(navController: NavController) {
-    var pointsRemain by remember { mutableStateOf(501) }
-    var multiplier by remember { mutableStateOf(1) }
-    var totalPoints by remember { mutableStateOf(0) }
-    var throwsCount by remember { mutableStateOf(0) }
-
-    val average = if (throwsCount > 0) totalPoints.toDouble() / throwsCount else 0.0
-
-
-    Scaffold (
+fun HomeScreen(
+    navController: NavController,
+) {
+    Scaffold(
         topBar = {
             SimpleTopAppBar(title = "Darts Mania", false, navController)
         },
         bottomBar = {
-            //SimpleBottomAppBar(navController)
+            // SimpleBottomAppBar(navController)
         }
-    ){ innerPadding ->
-        Column (
-            modifier = Modifier
-                .padding(innerPadding)
-        ){
-            PlayerStats(pointsRemain = pointsRemain, average = average, shots = throwsCount)
-            Spacer(modifier = Modifier.height(8.dp))
-            PlayerStats(pointsRemain = pointsRemain, average = average, shots = throwsCount)
-            PointButtons { value ->
-                when (value) {
-                    "DOU" -> multiplier = 2
-                    "TRI" -> multiplier = 3
-                    else -> {
-                        val intValue = value.toIntOrNull() ?: 0
-                        val pointsScored = intValue * multiplier
-                        pointsRemain -= pointsScored
-                        totalPoints += pointsScored
-                        throwsCount++
-                        multiplier = 1 // Reset the multiplier after use
-                        if (pointsRemain < 0) {
-                            pointsRemain = 0 // Ensure points don't go negative
-                        }
-                    }
-                }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            CardForHomeScreen(
+                text = "Play against others?"
+            ) {
+                navController.navigate(Screen.PlayerGame.route)
             }
+            CardForHomeScreen(text = "Play against bot?"){
+                navController.navigate(Screen.BotGame.route)
+            }
+            Image(
+                painter = painterResource(id = R.drawable.darts_sketch_vector),
+                contentDescription = "Darts Sketch",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(500.dp)
+            )
         }
     }
 }

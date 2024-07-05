@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -35,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.dartmania.models.calculateCheckout
 import com.example.dartmania.navigation.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -218,10 +221,38 @@ fun DartsPointsRow(
     darts: ArrayList<String>
 ) {
     if (visible) {
-        darts.forEach{dart ->
-            Text(dart, style = MaterialTheme.typography.labelLarge)
-        }
-        /*
+        Card(
+            modifier = Modifier
+                .padding(top = 10.dp)
+                .fillMaxWidth()
+                .height(50.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "CPU throws: ",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontSize = 20.sp,
+                    )
+                darts.forEach { dart ->
+                    Text(
+                        dart + " |",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontSize = 20.sp,
+                        //modifier = Modifier.padding(end = 5.dp)
+
+
+                        )
+                }
+            }
+
+
+
+            /*
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -266,6 +297,42 @@ fun DartsPointsRow(
                 }
             }
         }*/
+        }
     }
 }
+
+
+//TODO: soll alle drei runden sich nur ändern und nicht nach jedem wurf
+@Composable
+fun ShowCheckout(
+    pointsRemain: Int = 180,
+    player: String = "default"
+){
+    if(pointsRemain <= 170 && (calculateCheckout(pointsRemain) != "No Checkout Possible" )) {
+        Column (
+        ){
+            Card(
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .fillMaxWidth()
+                    .height(50.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp), // Adjust height as needed
+                    contentAlignment = Alignment.Center
+                ){
+                    Text(
+                        text = player + " " + calculateCheckout(remainingPoints = pointsRemain),
+                        fontSize = 25.sp,
+                        modifier = Modifier
+                            .wrapContentSize(Alignment.Center)
+                    )
+                }
+            }
+        }
+    }
+}
+
 

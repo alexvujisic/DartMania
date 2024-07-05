@@ -76,6 +76,13 @@ fun PlayerScreen(
                 visible = playerTwo.isCpuPlayer,
                 darts = cpuDarts
             )
+
+            ShowCheckout(pointsRemain = playerOne.pointsRemain, player = "Player 1")
+            if(!playerTwo.isCpuPlayer){
+                ShowCheckout(pointsRemain = playerTwo.pointsRemain, player = "Player 2")
+            }
+
+
             if(currentPlayer == 1 || (!playerTwo.isCpuPlayer && currentPlayer == 2)){
                 PointButtons { value ->
                     when (value) {

@@ -164,3 +164,7 @@ private val checkoutTable = mapOf(
     3 to "S1 D1",
     2 to "D1"
 )
+
+fun calculateCheckout(remainingPoints: Int): String {
+    return checkoutTable[remainingPoints] ?: "No Checkout Possible"
+}

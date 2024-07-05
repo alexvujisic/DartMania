@@ -31,7 +31,7 @@ import com.example.dartmania.viewmodels.PlayerViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-//@SuppressLint("StateFlowValueCalledInComposition")
+
 @Composable
 fun PlayerScreen(
     viewModel: PlayerViewModel = viewModel(),
@@ -139,7 +139,7 @@ fun PlayerScreen(
         }
     }
 
-    if (gameOver) {
+    if (gameOver && !playingAgainstBot) {
         if((9 == playerOne.throwsCount && playerOne.name == winner) || (9 == playerTwo.throwsCount && playerTwo.name == winner)){
             WinWith9DartsAnimation(
                 isVisible = true,
@@ -161,6 +161,20 @@ fun PlayerScreen(
             )
         }
 
+    }else if(gameOver && playingAgainstBot){
+        AlertDialog(
+            onDismissRequest = { },
+            title = { Text(text = "Game Over") },
+            text = { Text(text = "Winner: $winner") },
+            confirmButton = {
+                Button(onClick = {
+
+                }) {
+                    Text("Good Job!")
+                }
+            }
+        )
+        navController.navigateUp()
     }
 }
 

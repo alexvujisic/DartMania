@@ -252,51 +252,7 @@ fun DartsPointsRow(
 
 
 
-            /*
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
-        ) {
-            // Headline with three columns
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("1. Wurf", style = MaterialTheme.typography.labelLarge)
-                Spacer(modifier = Modifier.weight(1f))
-                Text("2. Wurf", style = MaterialTheme.typography.labelLarge)
-                Spacer(modifier = Modifier.weight(1f))
-                Text("3. Wurf", style = MaterialTheme.typography.labelLarge)
-            }
 
-            // Scrollable list of rows with text fields
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-
-            ) {
-                items(darts.size) { index ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
-                    ) {
-                        repeat(3) { columnIndex ->
-                            BasicTextField(
-                                value = TextFieldValue("Row ${index + 1}, Column ${columnIndex + 1}"),
-                                onValueChange = { /* Nothing to change here */ },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(horizontal = 4.dp)
-                                    .heightIn(min = 48.dp)
-                            )
-                        }
-                    }
-                }
-            }
-        }*/
         }
     }
 }

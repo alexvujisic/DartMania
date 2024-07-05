@@ -119,6 +119,7 @@ class PlayerViewModel : ViewModel() {
         _rounds.value = 0
         _gameOver.value = false
         _winner.value = ""
+        cpuDarts.value = ArrayList()
     }
 
 

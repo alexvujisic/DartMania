@@ -77,23 +77,6 @@ fun SimpleTopAppBar(title: String?, showBackButton: Boolean = false, navControll
 
 
 @Composable
-fun SimpleBottomAppBar(navController: NavController){
-    val currentScreen = navController.currentBackStackEntryAsState().value?.destination?.route
-    NavigationBar {
-        NavigationBarItem(
-            label = { Text("Home") },
-            selected = currentScreen == Screen.Home.route,
-            onClick = { navController.navigate(Screen.Home.route) },
-            icon = { Icon(
-                imageVector = Icons.Filled.Home,
-                contentDescription = "Go to home"
-            )
-            }
-        )
-    }
-}
-
-@Composable
 fun PointButtons(onButtonClick: (String) -> Unit) {
     Box(
         modifier = Modifier
